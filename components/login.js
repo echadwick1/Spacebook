@@ -35,7 +35,6 @@ class LoginScreen extends Component {
         })
         .then((response) => response.json())
         .then((json) => {
-            console.log(json);
             storeData(json);
             this.props.navigation.navigate("Main");
         })

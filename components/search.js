@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class SearchScreen extends Component {
     constructor(props){

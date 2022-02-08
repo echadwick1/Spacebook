@@ -13,6 +13,29 @@ class SignUpScreen extends Component {
         }
     }
 
+    signUp = () => {
+        fetch('http://localhost:3333/api/1.0.0/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+                email: this.state.email,
+                password: this.state.password
+            })
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            console.log(json);
+            this.props.navigation.navigate("Login");
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+    }
+
     render(){
         return (
             <View>
@@ -40,7 +63,7 @@ class SignUpScreen extends Component {
                 />
                 <Button 
                     title="Sign Up"
-                    onPress={() => this.signup()}
+                    onPress={() => this.signUp()}
                 />
             </View>
         );
