@@ -36,6 +36,8 @@ class LoginScreen extends Component {
         .then((response) => response.json())
         .then((json) => {
             storeData(json);
+            this.setState({email: ""});
+            this.setState({password: ""});
             this.props.navigation.navigate("Main");
         })
         .catch((error) => {
