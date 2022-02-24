@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Text, ScrollView} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, View, Text, StyleSheet } from 'react-native';
+import { getLoginDetails, removeLoginDetails } from './helpers';
 
 class LogoutScreen extends Component {
     constructor(props){
@@ -8,9 +8,8 @@ class LogoutScreen extends Component {
     }
 
     signOut = async () => {
-        let token = await AsyncStorage.getItem('@spacebook_details');
-        await AsyncStorage.removeItem('@spacebook_details');
-        const data = JSON.parse(token);
+        let data = await getLoginDetails()
+        await removeLoginDetails()
         return fetch("http://localhost:3333/api/1.0.0/logout", {
             method: 'POST',
             headers: {
@@ -28,20 +27,27 @@ class LogoutScreen extends Component {
         })
         .catch((error) => {
             console.log(error);
-            ToastAndroid.show(error, ToastAndroid.SHORT);
         })
+        
     }
 
     render(){
         return (
-            <DrawerContentScrollView>
-                <Button
-                    title="I'm outta here"
-                    onPress={() => this.signOut()}
-                />
-            </DrawerContentScrollView>
+            <View style={styles.container}>
+                <Text>Are you sure you want to sign out?</Text>
+                <Button title="Yes" onPress={() => this.signOut()}/>
+                <Button title="No" onPress={() => this.props.navigation.goBack()}/>
+            </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+      padding: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }
+});
 
 export default LogoutScreen;

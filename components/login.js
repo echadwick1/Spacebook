@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const storeData = async (value) => {
-    try {
-        const jsonValue = JSON.stringify(value)
-        await AsyncStorage.setItem('@spacebook_details', jsonValue)
-    }
-    catch (e) {
-        console.error(e);
-    }
-}
+import { storeLoginDetails } from './helpers';
 
 class LoginScreen extends Component {
     constructor(props){
@@ -35,7 +25,7 @@ class LoginScreen extends Component {
         })
         .then((response) => response.json())
         .then((json) => {
-            storeData(json);
+            storeLoginDetails(json)
             this.setState({email: ""});
             this.setState({password: ""});
             this.props.navigation.navigate("Main");

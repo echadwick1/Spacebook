@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TextInput, Button} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const getData = async (done) => {
-    try {
-        const json = await AsyncStorage.getItem('@spacebook_details')
-        const data = JSON.parse(json);
-        return done(data);
-    } catch(e) {
-        console.error(e);
-    }
-}
+import { View, Text, Image, TextInput, Button, FlatList } from 'react-native';
+import { getLoginDetails } from './helpers';
 
 class ProfileScreen extends Component {
     constructor(props){
@@ -18,6 +8,8 @@ class ProfileScreen extends Component {
 
         this.state = {
             loginInfo: {},
+            userPosts: [],
+            newPostText: "",
             originalUserInfo: {},
             newFirstName: "",
             newLastName: "",
@@ -26,6 +18,47 @@ class ProfileScreen extends Component {
             profileImage: null,
             showEditProfile: false,
         }; 
+    }
+
+    checkLoggedIn = async () => {
+        let data = await getLoginDetails();
+        if (data.token == null) {
+            this.props.navigation.navigate('Login');
+        }
+    };
+
+    loadUserPosts = () => {
+        fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loginInfo.id}/post`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Authorization': `${this.state.loginInfo.token}`,
+            },
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            this.setState({userPosts: json});
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+
+    }
+
+    addNewPost = () => {
+        fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loginInfo.id}/post`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Authorization': `${this.state.loginInfo.token}`,
+            },
+            body: JSON.stringify({
+                text: this.state.newPostText
+            })
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     }
 
     loadUserDetails = () => {
@@ -105,13 +138,23 @@ class ProfileScreen extends Component {
         })
     }
 
-    componentDidMount() {
-        getData((data) => {
-            this.setState({
-                loginInfo: data
-            }, () => this.loadUserDetails());
-        })
-        .then(() => this.loadProfileImage());    
+    async componentDidMount() {
+        const data = await getLoginDetails();
+        this.setState({
+            loginInfo: data
+        }, () => {
+            this.loadUserDetails();
+            this.loadProfileImage();
+            this.loadUserPosts();
+        });
+        
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.checkLoggedIn();
+          });
+    }
+
+    componentWillUnmount(){
+        this._unsubscribe();
     }
 
     render(){
@@ -161,6 +204,29 @@ class ProfileScreen extends Component {
                         onPress={() => this.updateProfileInfo()}
                     />
                 </View>
+
+                <Text>Add a new post</Text>
+                <TextInput
+                    placeholder="What are you thinking?"
+                    onChangeText={(text) => {
+                        this.setState({newPostText: text})
+                    }}
+                    value={this.state.newPostText}
+                />
+                <Button
+                    title="Add"
+                    onPress={() => this.addNewPost()}
+                />
+
+                <FlatList
+                    data={this.state.userPosts}
+                    renderItem={({item, index}) => 
+                        <View>
+                            <Text>This is the title of a post! </Text>
+                            <Text>{item.text} </Text>
+                        </View>
+                }>
+                </FlatList>
             </View>
         );
     }
