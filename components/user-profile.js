@@ -31,65 +31,25 @@ class UserProfileScreen extends Component {
                 'X-Authorization': `${this.state.loggedInUserInfo.token}`,
             },
         })
-        .then((response) => console.log(response))
-        .then(this.showSendFriendRequest())
         .catch((error) => {
             console.error(error);
         })
-    }
-
-    showSendFriendRequest = () => {
-        this.getMyFriends();
-        this.getMyFriendRequests();
-        let userId = this.state.userInfo.user_id
-        let alreadyFriends = false
-        this.state.loggedInUserFriends.forEach((item) => {
-            if (item.user_id == userId)
-            {
-                alreadyFriends = true;
-            }
-        })
-        if (this.state.loggedInUserFriends.includes(user))
-        {
-            console.log("Already a friend")
-            this.setState({showSendFriendRequest: false});
-        }
-        else if (this.state.loggedInUserFriendRequests.includes(user))
-        {
-            console.log("already requested")
-            this.setState({showSendFriendRequest: false});
-        }
-        else 
-        {
-            this.setState({showSendFriendRequest: true});
-        }
     }
 
     getMyFriends = () => {
-        fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loggedInUserInfo.id}/friends`, {
+        fetch(`http://localhost:3333/api/1.0.0/user/${this.state.userInfo.user_id}/post`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Authorization': `${this.state.loggedInUserInfo.token}`,
             },
         })
-        .then((response) => response.json())
-        .then((json) => this.setState({loggedInUserFriends: json}))
-        .catch((error) => {
-            console.error(error);
+        .then((response) => {
+            if (response.status === 403)
+            {
+                this.setState({showSendFriendRequest: true})
+            }
         })
-    }
-
-    getMyFriendRequests = () => {
-        fetch(`http://localhost:3333/api/1.0.0/friendrequests`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Authorization': `${this.state.loggedInUserInfo.token}`,
-            },
-        })
-        .then((response) => response.json())
-        .then((json) => this.setState({loggedInUserFriendRequests: json}))
         .catch((error) => {
             console.error(error);
         })
@@ -121,12 +81,13 @@ class UserProfileScreen extends Component {
             loggedInUserInfo: data
         }, () => {
             this.loadProfileImage();
+            this.getMyFriends();
         });
-
-        this.showSendFriendRequest();
-
+        
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.checkLoggedIn();
+            this.loadProfileImage();
+            this.getMyFriends();
           });
     }
 

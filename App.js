@@ -8,6 +8,7 @@ import ProfileScreen from './components/profile';
 import FriendsScreen from './components/friends';
 import SearchScreen from './components/search';
 import UserProfileScreen from './components/user-profile.js';
+import ProfileCamera from './components/profile-camera.js';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem} from "@react-navigation/drawer"
@@ -28,6 +29,7 @@ class App extends Component {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Logout" component={LogoutScreen} />
           <Stack.Screen name="UserProfile" component={UserProfileScreen} />
+          <Stack.Screen name="ProfileCamera" component={ProfileCamera} />
           <Stack.Screen name="Main" component={this.Main} options={{headerShown: false}} />
         </Stack.Navigator>
       </NavigationContainer>

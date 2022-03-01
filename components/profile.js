@@ -79,7 +79,7 @@ class ProfileScreen extends Component {
     }
 
     loadProfileImage = () => {
-        fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loginInfo.id}/photo`, {
+        fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loginInfo.id}/photo?` + Date.now(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'image/png',
@@ -150,6 +150,9 @@ class ProfileScreen extends Component {
         
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.checkLoggedIn();
+            this.loadUserDetails();
+            this.loadProfileImage();
+            this.loadUserPosts();
           });
     }
 
@@ -198,6 +201,10 @@ class ProfileScreen extends Component {
                             this.setState({newPassword: password})}
                         }
                         value={this.state.newPassword}
+                    />
+                    <Button
+                        title="Update Profile Picture"
+                        onPress={() => this.props.navigation.navigate("ProfileCamera")}
                     />
                     <Button
                         title="Update"
