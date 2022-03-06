@@ -225,6 +225,7 @@ class ProfileScreen extends Component {
                     onPress={() => this.addNewPost()}
                 />
 
+                <Text> Posts: </Text>
                 <FlatList
                     data={this.state.userPosts}
                     renderItem={({item, index}) => 
