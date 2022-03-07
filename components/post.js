@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, TextInput, Button } from 'react-native';
 
 import { getLoginDetails } from './helpers';
 
@@ -64,6 +63,11 @@ class PostScreen extends Component {
                 this.setState({disableLikeButton: true})
                 this.setState({showOwnPostMessage: true})
                 this.setState({showUpdateDeletePost: true})
+            }
+            else if (this.state.userId == this.state.loginInfo.id)
+            {
+                this.setState({disableLikeButton: true})
+                this.setState({showOwnPostMessage: true})
             }
         })
         .catch((error) => {

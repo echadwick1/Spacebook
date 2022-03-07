@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TextInput, Button, FlatList } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getLoginDetails } from './helpers';
 
 class ProfileScreen extends Component {
@@ -229,11 +230,17 @@ class ProfileScreen extends Component {
                 <FlatList
                     data={this.state.userPosts}
                     renderItem={({item, index}) => 
-                        <View>
-                            <Text>This is the title of a post! </Text>
-                            <Text>{item.text} </Text>
-                        </View>
-                }>
+                        <TouchableOpacity
+                            onPress={() => {
+                            this.props.navigation.navigate("Post", 
+                            {
+                                postId: item.post_id,
+                                userId: this.state.loginInfo.id
+                            })}}
+                        >
+                            <Text>{item.text}</Text>
+                        </TouchableOpacity>
+                    }>
                 </FlatList>
             </View>
         );
