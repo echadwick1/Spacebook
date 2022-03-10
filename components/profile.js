@@ -113,7 +113,7 @@ class ProfileScreen extends Component {
   };
 
   loadUserPosts = () => {
-    fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loginInfo.id}/post/?limit=2`, {
+    fetch(`http://localhost:3333/api/1.0.0/user/${this.state.loginInfo.id}/post`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
