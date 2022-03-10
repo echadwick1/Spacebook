@@ -60,7 +60,7 @@ class App extends Component {
     return (
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Logout" component={LogoutScreen} />
           <Stack.Screen name="UserProfile" component={UserProfileScreen} />
